@@ -7,9 +7,136 @@ This project simulates 3D turbulence evolution using quantum circuits to inject 
 ## 📦 Dependencies
 
 ```bash
-pip install qiskit plotly matplotlib
+!pip install qiskit==0.46.3 qiskit-aer qiskit-terra qiskit-ibmq-provider qiskit-machine-learning qiskit-algorithms qiskit-optimization
 ```
 
+##ALSO ADD
+```bash
+!pip list | grep qiskit
+```
+### Import Numpy
+```bash
+!pip install numpy==1.24
+```
+
+```bash
+!pip install qiskit-aer
+
+```
+### Delete the unwanted files
+```bash
+!pip cache purge
+```
+
+### Import AER
+```bash
+from qiskit import Aer
+print(Aer.backends())
+
+```
+
+### Load the account 
+```bash
+
+from qiskit import IBMQ
+
+# Save your IBM Quantum token (replace 'YOUR_API_TOKEN' with your actual token)
+IBMQ.save_account('YOUR_API_TOKEN')
+
+```
+
+```bash
+# Load the IBM Quantum account
+IBMQ.load_account()
+
+```
+```bash
+# Get the provider
+provider = IBMQ.get_provider()
+
+# List all available backends
+backends = provider.backends()
+print(backends)
+```
+```bash
+from qiskit import QuantumCircuit, Aer, transpile, assemble, execute
+
+# Create a quantum circuit with 2 qubits
+qc = QuantumCircuit(2, 2)  # Add 2 classical bits for measurement
+
+# Create a Bell state
+qc.h(0)  # Apply Hadamard gate to the first qubit
+qc.cx(0, 1)  # Apply CNOT gate from qubit 0 to qubit 1
+
+# Measure the qubits
+qc.measure([0, 1], [0, 1])  # Measure qubit 0 into classical bit 0 and qubit 1 into classical bit 1
+
+# Draw the circuit
+qc.draw('text')  # This will render the circuit as text instead of using Matplotlib.
+```
+```bash
+!pip cache purge# Use the Aer simulator
+simulator = Aer.get_backend('aer_simulator')
+
+# Transpile the circuit for the simulator
+transpiled_circuit = transpile(qc, simulator)
+
+# Assemble the circuit into a Qobj
+qobj = assemble(transpiled_circuit)
+
+# Execute the circuit
+job = simulator.run(qobj)
+
+# Get the results
+result = job.result()
+
+# Get the counts (measurement results)
+counts = result.get_counts(qc)
+print(counts)
+```
+
+### Sample
+```bash
+# Import necessary libraries
+from qiskit import QuantumCircuit, Aer, transpile, assemble, execute
+from qiskit.visualization import plot_histogram
+
+# Create a quantum circuit with 2 qubits and 2 classical bits
+qc = QuantumCircuit(2, 2)  # 2 qubits, 2 classical bits for measurement
+
+# Create a Bell state
+qc.h(0)  # Apply Hadamard gate to the first qubit
+qc.cx(0, 1)  # Apply CNOT gate from qubit 0 to qubit 1
+
+# Measure the qubits
+qc.measure([0, 1], [0, 1])  # Measure qubit 0 into classical bit 0 and qubit 1 into classical bit 1
+
+# Draw the circuit
+print("Quantum Circuit:")
+print(qc.draw())
+
+# Use the Aer simulator
+simulator = Aer.get_backend('aer_simulator')
+
+# Transpile the circuit for the simulator
+transpiled_circuit = transpile(qc, simulator)
+
+# Assemble the circuit into a Qobj
+qobj = assemble(transpiled_circuit)
+
+# Execute the circuit
+job = simulator.run(qobj)
+
+# Get the results
+result = job.result()
+
+# Get the counts (measurement results)
+counts = result.get_counts(qc)
+print("Counts:", counts)
+
+# Plot the histogram of the results
+plot_histogram(counts)
+```
 ---
 ## 🧠 Overview
 - Uses a parameterized quantum circuit to generate dynamic behavior.
@@ -59,4 +186,19 @@ pip install qiskit plotly matplotlib
 - Adds time animation with go.Frame() and a play/pause slider.
 
 - Displays the animated visualization in the browser.
+
+---
+
+## 📊 Parameters
+- num_qubits = 7: Number of qubits for quantum simulation (affects circuit complexity).
+
+- time_steps: 10 evenly spaced values from 0.1 to 2.0.
+
+- pressure_points: List of [x, y, z, intensity] for where and how turbulence is injected.
+
+- turbulence_data: Stores the turbulence field per time step.
+
+- quantum_circuits: Stores each quantum circuit for reuse/analysis.
+
+- quantum_counts: Stores the measurement result of each quantum circuit.
 
